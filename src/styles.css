@@ -1,0 +1,615 @@
+:root {
+  --bg-abyss: #040507;
+  --bg-stone: #0b0d13;
+  --bg-iron: #13161f;
+  --border-wrought: #322e3d;
+  --text-decayed-yellow: #c8b464;
+  --text-ash-yellow: #9e8f52;
+  --accent-lightning: #c4adff;
+  --withered-yellow-bright: #b89f48;
+  --withered-yellow-deep: #7d6824;
+  --ink-black: #06070a;
+  --skin-faint-yellow: #8c7f43;
+  --eye-dull-white: #e2e8f0;
+  --lantern-amber: rgba(245, 194, 107, 0.16);
+  --blood-red: #dc143c;
+  --blood-red-bright: #ff2442;
+  --crimson-blood: #e11d48;
+  --crimson-soft: #fecdd3;
+  --emerald-spark: #22c55e;
+  --emerald-soft: #bbf7d0;
+  --font-gothic-blackletter: "UnifrakturMaguntia", "Cinzel Decorative", Georgia, serif;
+  --font-gothic-body: "IM Fell English", Georgia, serif;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+.banner,
+#form-banner {
+  display: none !important;
+}
+
+/* Storm flashes around the edges of the screen */
+@keyframes stormLightningArcs {
+  0%,
+  86%,
+  100% {
+    opacity: 0.12;
+  }
+  88% {
+    opacity: 0.55;
+  }
+  90% {
+    opacity: 0.15;
+  }
+  92% {
+    opacity: 0.42;
+  }
+  94% {
+    opacity: 0.1;
+  }
+}
+
+/* Dim lantern glow breathing around the form container */
+@keyframes lanternDimPulse {
+  0%,
+  100% {
+    opacity: 0.72;
+    transform: translate(-50%, -50%) scale(0.98);
+  }
+  50% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.03);
+  }
+}
+
+@keyframes creatureSilhouetteBreath {
+  0%,
+  100% {
+    transform: translate(-50%, -46%) scale(1.22);
+    opacity: 0.9;
+  }
+  50% {
+    transform: translate(-50%, calc(-46% - 8px)) scale(1.25);
+    opacity: 1;
+  }
+}
+
+@keyframes creatureEyeBlink {
+  0% {
+    transform: scaleY(1);
+    filter: drop-shadow(0 0 6px rgba(226, 232, 240, 0.75));
+  }
+  45% {
+    transform: scaleY(0.05);
+    filter: drop-shadow(0 0 1px rgba(226, 232, 240, 0.2));
+  }
+  100% {
+    transform: scaleY(1);
+    filter: drop-shadow(0 0 10px rgba(241, 245, 249, 0.95));
+  }
+}
+
+@keyframes stepReveal {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes stepFoldAway {
+  from {
+    opacity: 1;
+    transform: scaleY(1);
+    max-height: 180px;
+  }
+  to {
+    opacity: 0;
+    transform: scaleY(0.15);
+    max-height: 0;
+  }
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2.5rem 2rem;
+  font-family: var(--font-gothic-body);
+  color: var(--text-decayed-yellow);
+  position: relative;
+  overflow: hidden;
+  background-color: var(--bg-abyss);
+  background-image:
+    radial-gradient(ellipse at 50% 50%, var(--lantern-amber), rgba(140, 127, 67, 0.04) 42%, transparent 68%),
+    linear-gradient(180deg, #040507 0%, #07080d 55%, #030406 100%);
+}
+
+/* Electric storm lightning pulsing around the screen perimeter */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(circle at 8% 14%, rgba(196, 173, 255, 0.24), transparent 36%),
+    radial-gradient(circle at 92% 16%, rgba(196, 173, 255, 0.22), transparent 36%),
+    radial-gradient(circle at 12% 86%, rgba(124, 92, 255, 0.18), transparent 40%),
+    radial-gradient(circle at 88% 85%, rgba(124, 92, 255, 0.18), transparent 40%),
+    linear-gradient(90deg, rgba(196, 173, 255, 0.09), transparent 18%, transparent 82%, rgba(196, 173, 255, 0.09));
+  animation: stormLightningArcs 7.5s infinite;
+}
+
+/* Dim warm lantern halo centered around the form container */
+body::after {
+  content: "";
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  width: min(740px, 94vw);
+  height: min(660px, 88vh);
+  pointer-events: none;
+  z-index: 1;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(245, 194, 107, 0.16) 0%,
+    rgba(196, 148, 72, 0.06) 45%,
+    transparent 72%
+  );
+  filter: blur(22px);
+  animation: lanternDimPulse 6s ease-in-out infinite;
+}
+
+/* Massive silhouette centered behind the form container with eyes near the top */
+.creature-panel {
+  position: fixed;
+  left: 50%;
+  top: 46%;
+  width: min(1040px, 98vw);
+  height: min(1080px, 105vh);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 1;
+  animation: creatureSilhouetteBreath 8.5s ease-in-out infinite;
+}
+
+.creature-aura {
+  position: absolute;
+  inset: 14% 12%;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(140, 127, 67, 0.08),
+    rgba(6, 7, 11, 0.3) 62%,
+    transparent 82%
+  );
+  filter: blur(36px);
+}
+
+.creature-svg {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: contrast(1.06);
+}
+
+.creature-eye {
+  transform-box: fill-box;
+  transform-origin: center;
+  filter: drop-shadow(0 0 7px rgba(226, 232, 240, 0.85));
+}
+
+.creature-eye.is-blinking {
+  animation: creatureEyeBlink 0.42s ease-in-out;
+}
+
+.gothic-card,
+.form-card,
+main {
+  width: 100%;
+  max-width: 560px;
+  margin-left: 0;
+  padding: 2.6rem 2.4rem;
+  border-radius: 4px;
+  background-color: rgba(11, 13, 19, 0.92);
+  backdrop-filter: blur(3px);
+  border: 1px solid var(--border-wrought);
+  box-shadow:
+    0 24px 65px rgba(0, 0, 0, 0.95),
+    0 0 42px rgba(245, 194, 107, 0.09);
+  position: relative;
+  z-index: 2;
+}
+
+.gothic-card::before {
+  content: "";
+  position: absolute;
+  inset: 7px;
+  border: 1px solid rgba(245, 194, 107, 0.14);
+  pointer-events: none;
+  border-radius: 2px;
+}
+
+.gothic-header {
+  text-align: center;
+  margin-bottom: 1.9rem;
+}
+
+.eyebrow {
+  margin: 0 0 0.45rem;
+  font-family: var(--font-gothic-body);
+  font-size: 0.95rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--skin-faint-yellow);
+}
+
+h1 {
+  margin: 0 0 0.6rem;
+  font-family: var(--font-gothic-blackletter);
+  font-size: 2.35rem;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  color: var(--text-decayed-yellow);
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.95);
+}
+
+.subtitle,
+.form-subtitle,
+h1 + p {
+  margin: 0;
+  font-family: var(--font-gothic-body);
+  font-style: italic;
+  font-size: 1.16rem;
+  line-height: 1.55;
+  letter-spacing: 0.015em;
+  color: var(--text-ash-yellow);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  margin-bottom: 1.4rem;
+}
+
+.field.step-hidden {
+  display: none;
+}
+
+.field.step-active {
+  animation: stepReveal 0.3s ease forwards;
+}
+
+.field.step-folding {
+  animation: stepFoldAway 0.26s ease forwards;
+  transform-origin: top center;
+}
+
+label {
+  font-family: var(--font-gothic-blackletter);
+  font-size: 1.35rem;
+  font-weight: 400;
+  letter-spacing: 0.03em;
+  color: var(--text-decayed-yellow);
+}
+
+input,
+select {
+  padding: 0.88rem 1.05rem;
+  border-radius: 3px;
+  border: 1px solid var(--border-wrought);
+  background-color: var(--bg-iron);
+  color: var(--text-decayed-yellow);
+  font-family: var(--font-gothic-body);
+  font-size: 1.1rem;
+  line-height: 1.45;
+  outline: none;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease, background-color 0.18s ease;
+}
+
+input::placeholder {
+  color: #b8a65e;
+  opacity: 0.68;
+  font-family: var(--font-gothic-body);
+  font-style: italic;
+  font-size: 1.06rem;
+}
+
+input:focus,
+select:focus {
+  border-color: var(--withered-yellow-bright);
+  background-color: #181c28;
+  box-shadow: 0 0 0 2px rgba(184, 159, 72, 0.24);
+}
+
+input[aria-invalid="true"],
+select[aria-invalid="true"],
+input:user-invalid,
+select:user-invalid,
+input.force-invalid,
+select.force-invalid {
+  border-color: var(--blood-red);
+  background-color: #220f16;
+  box-shadow: 0 0 0 2px rgba(220, 20, 60, 0.3);
+}
+
+input[aria-invalid="false"],
+select[aria-invalid="false"],
+input:user-valid:not([aria-invalid="true"]):not(.force-invalid),
+select:user-valid:not([aria-invalid="true"]):not(.force-invalid) {
+  border-color: var(--emerald-spark);
+  box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.28);
+}
+
+/* Bloody red mockery line on invalid fields */
+.error-msg {
+  min-height: 1.25rem;
+  font-family: var(--font-gothic-body);
+  font-style: italic;
+  font-size: 1.12rem;
+  font-weight: 600;
+  line-height: 1.48;
+  color: var(--blood-red-bright);
+  text-shadow: 0 0 10px rgba(220, 20, 60, 0.35);
+}
+
+.typing-quote {
+  margin: 0.2rem 0 0;
+  font-family: var(--font-gothic-body);
+  font-style: italic;
+  font-size: 1.14rem;
+  line-height: 1.48;
+  color: var(--text-decayed-yellow);
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.9);
+}
+
+.typing-quote:empty {
+  display: none;
+}
+
+.submit-btn,
+.reset-btn {
+  width: 100%;
+  margin-top: 0.5rem;
+  padding: 0.95rem 1.15rem;
+  border: 1px solid rgba(200, 180, 100, 0.55);
+  border-radius: 3px;
+  font-family: var(--font-gothic-blackletter);
+  font-size: 1.4rem;
+  font-weight: 400;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  background: linear-gradient(180deg, var(--withered-yellow-bright) 0%, var(--withered-yellow-deep) 100%);
+  color: var(--ink-black);
+  box-shadow: 0 6px 22px rgba(125, 104, 36, 0.34);
+  transition: transform 0.12s ease, filter 0.15s ease;
+}
+
+.submit-btn:hover,
+.reset-btn:hover {
+  filter: brightness(1.1);
+}
+
+.submit-btn:active,
+.reset-btn:active {
+  transform: translateY(1px);
+}
+
+/* Standalone "I beg to go back, as I got it wrong" action, yield prompt & step choices */
+.beg-back-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  margin-top: 0.75rem;
+  width: 100%;
+}
+
+.beg-back-actions[hidden] {
+  display: none !important;
+}
+
+.beg-back-btn {
+  display: block;
+  width: 100%;
+  padding: 0.78rem 1.1rem;
+  background: linear-gradient(
+    180deg,
+    var(--withered-yellow-bright) 0%,
+    var(--withered-yellow-deep) 100%
+  );
+  border: 1px solid rgba(200, 180, 100, 0.55);
+  border-radius: 3px;
+  color: var(--ink-black);
+  font-family: var(--font-gothic-body);
+  font-style: italic;
+  font-weight: 600;
+  font-size: 1.14rem;
+  letter-spacing: 0.02em;
+  text-align: center;
+  cursor: pointer;
+  box-shadow: 0 5px 18px rgba(125, 104, 36, 0.28);
+  transition:
+    transform 0.12s ease,
+    filter 0.15s ease;
+}
+
+.beg-back-btn:hover {
+  filter: brightness(1.1);
+}
+
+.beg-back-btn:active {
+  transform: translateY(1px);
+}
+
+.beg-back-btn[hidden] {
+  display: none !important;
+}
+
+.creature-beg-reply {
+  margin: 0;
+  padding: 0.85rem 1.05rem;
+  border-left: 3px solid var(--withered-yellow-bright);
+  border-radius: 0 3px 3px 0;
+  background-color: rgba(8, 9, 13, 0.94);
+  font-family: var(--font-gothic-body);
+  font-style: italic;
+  font-size: 1.18rem;
+  line-height: 1.5;
+  color: var(--text-decayed-yellow);
+  text-shadow: 0 0 8px rgba(245, 194, 107, 0.2);
+}
+
+.creature-beg-reply[hidden],
+.creature-beg-reply:empty {
+  display: none !important;
+}
+
+.beg-relent-btn {
+  align-self: center;
+  margin-top: 0.55rem;
+  padding: 0.72rem 1.35rem;
+  background: linear-gradient(
+    180deg,
+    var(--withered-yellow-bright) 0%,
+    var(--withered-yellow-deep) 100%
+  );
+  border: 1px solid rgba(200, 180, 100, 0.55);
+  border-radius: 3px;
+  color: var(--ink-black);
+  font-family: var(--font-gothic-body);
+  font-style: italic;
+  font-weight: 600;
+  font-size: 1.15rem;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  box-shadow: 0 5px 18px rgba(125, 104, 36, 0.28);
+  transition:
+    transform 0.12s ease,
+    filter 0.15s ease;
+}
+
+.beg-relent-btn:hover {
+  filter: brightness(1.1);
+}
+
+.beg-relent-btn:active {
+  transform: translateY(1px);
+}
+
+.beg-relent-btn[hidden] {
+  display: none !important;
+}
+
+.beg-step-choices {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  margin-top: 0.95rem;
+  padding-top: 0.9rem;
+  border-top: 1px solid rgba(200, 180, 100, 0.28);
+}
+
+.beg-step-choices[hidden] {
+  display: none !important;
+}
+
+.beg-step-prompt {
+  font-family: var(--font-gothic-body);
+  font-style: italic;
+  font-size: 1.12rem;
+  color: var(--text-ash-yellow);
+  text-align: center;
+}
+
+.beg-step-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  justify-content: center;
+}
+
+.beg-step-choice-btn {
+  padding: 0.65rem 1.1rem;
+  background: linear-gradient(
+    180deg,
+    var(--withered-yellow-bright) 0%,
+    var(--withered-yellow-deep) 100%
+  );
+  border: 1px solid rgba(200, 180, 100, 0.55);
+  border-radius: 3px;
+  color: var(--ink-black);
+  font-family: var(--font-gothic-body);
+  font-style: italic;
+  font-weight: 600;
+  font-size: 1.12rem;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(125, 104, 36, 0.25);
+  transition:
+    transform 0.12s ease,
+    filter 0.15s ease;
+}
+
+.beg-step-choice-btn:hover {
+  filter: brightness(1.1);
+}
+
+.beg-step-choice-btn:active {
+  transform: translateY(1px);
+}
+
+.high-five {
+  text-align: center;
+  padding: 1.85rem 1.35rem;
+  border-radius: 3px;
+  background-color: #1c0d14;
+  border: 1px solid var(--crimson-blood);
+  box-shadow: 0 0 32px rgba(225, 29, 72, 0.2);
+}
+
+.high-five h2 {
+  margin: 0 0 0.55rem;
+  font-family: var(--font-gothic-blackletter);
+  font-size: 1.9rem;
+  font-weight: 400;
+  color: var(--text-decayed-yellow);
+}
+
+.creature-vow {
+  margin: 0.85rem 0 1.1rem;
+  padding: 0.95rem 1.1rem;
+  border-left: 3px solid var(--crimson-blood);
+  background-color: #08090d;
+  font-family: var(--font-gothic-body);
+  font-style: italic;
+  font-size: 1.16rem;
+  line-height: 1.5;
+  color: var(--text-decayed-yellow);
+}
+
+.trap-note {
+  margin: 0 0 1.4rem;
+  font-family: var(--font-gothic-body);
+  font-size: 1.08rem;
+  line-height: 1.48;
+  color: var(--text-ash-yellow);
+}
